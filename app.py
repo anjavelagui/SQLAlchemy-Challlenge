@@ -41,10 +41,21 @@ def precipitation():
     session.query(stationtbl.id).count()
     actv_stations = session.query(measurementtbl.station, func.count(measurementtbl.station)).group_by(measurementtbl.station).order_by(func.count(measurementtbl.station).desc()).all()
     session.query(func.min(measurementtbl.tobs), func.max(measurementtbl.tobs), func.avg(measurementtbl.tobs)).filter(measurementtbl.station == ma_station).all()
-    return jsonify (top_station_year_obsv)
+    return jsonify ("top_station_year_obsv")
 @app.route("/appi/v1.0/temp/<start>")
 @app.route("/appi/v1.0/temp/<start>/<end>")
-def start(start =none, end = NoneType):
+def start(start = None , end = NoneType):
     session = Session(engine)
     session.query(func.min(measurementtbl.tobs), func.max(measurementtbl.tobs), func.avg(measurementtbl.tobs)).filter(measurementtbl.station == ma_station).all()
     if not end:
+        results = session.query().\
+            filter(measurementtbl.date <= start).all()
+        temps = list(np.ravel(results))
+        return jsonify(temps)
+
+    results = session.query().\
+           filter(measurementtbl.date >= start).\
+         filter(measurementtbl.date <= end).all()
+    temps = list(np.ravel(results))
+    return jsonify(temps=temps)
+
