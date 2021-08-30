@@ -58,4 +58,3 @@ def start(start = None , end = NoneType):
          filter(measurementtbl.date <= end).all()
     temps = list(np.ravel(results))
     return jsonify(temps=temps)
-
